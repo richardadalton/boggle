@@ -18,10 +18,6 @@ There are some limitations in the code as it currently stands.
 
 * Q and U are separate letters, there is no support for Qu
 
-* There is no support for command line arguments to allow grid size or word list to be specified when running the program.
-
-* There is a 3d version of the code which uses a cube of letters rather than a grid. This duplicates most of the code from the 2d version.
-
 ## Installation
 
 Just clone this repository.
@@ -32,14 +28,33 @@ $ git clone https://github.com/richardadalton/boggle.git
 
 ## Running Boggle
 
-There are 2D (grid) and 3D (cube) versions of boggle. To run the grid version run boggle.py.
+Running the 2D version of Boggle (Grid)
 
 ```bash
-$ python boggle.py
+$ python boggle.py [-h] [-f FILE] [-c COLUMNS] [-r ROWS] [-g]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -f FILE, --file FILE  Path to file containing list of valid words.
+  -c COLUMNS, --columns COLUMNS
+                        Number of columns in the grid.
+  -r ROWS, --rows ROWS  Number of rows in the grid.
+  -g, --grid            Display the grid.
 ```
 
-To run the cube version, run boggle3d.py
+Running the 3D version of Boggle (Cube)
 
 ```bash
-$ python boggle3d.py
+$ python boggle3d.py [-h] [-f FILE] [-c COLUMNS] [-r ROWS] [-d DEPTH] [-g]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -f FILE, --file FILE  Path to file containing list of valid words.
+  -c COLUMNS, --columns COLUMNS
+                        Number of columns in the cube.
+  -r ROWS, --rows ROWS  Number of rows in the cube.
+  -d DEPTH, --depth DEPTH
+                        Depth of the cube.
+  -g, --grid            Display the grids that make up the cube.
+
 ```

@@ -1,5 +1,28 @@
-from string import ascii_uppercase
+import argparse
 from random import choice
+from string import ascii_uppercase
+from utils import (
+    display_grid,
+    load_word_list,
+    display_words,
+    search,
+)
+
+
+def get_arguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-f", "--file", default="words.txt",
+                        help="Path to file containing list of valid words.")
+    parser.add_argument("-c", "--columns", default=4, type=int,
+                        help="Number of columns in the grid.")
+    parser.add_argument("-r", "--rows", default=4, type=int,
+                        help="Number of rows in the grid.")
+    parser.add_argument("-g", "--grid", action="store_true",
+                        help="Display the grid.")
+
+    args = parser.parse_args()
+    return args
+
 
 def make_grid(columns, rows):
     return {(c, r): choice(ascii_uppercase)
@@ -7,27 +30,13 @@ def make_grid(columns, rows):
             for c in range(columns)}
 
 
-
 def potential_neighbours(position):
     col, row = position
-    neigbours = set([(c, r)
-                    for c in range(col - 1, col + 2)
-                        for r in range(row - 1, row + 2)])
-    neigbours.remove(position)
-    return neigbours
-
-
-
-def path_to_word(path, grid):
-    return "".join([grid[position] for position in path])
-
-
-
-def load_word_list(filename):
-    with open(filename) as f:
-        text = f.read().upper().split("\n")
-    return set(text)
-
+    neighbours = set([(c, r)
+                     for c in range(col - 1, col + 2)
+                     for r in range(row - 1, row + 2)])
+    neighbours.remove(position)
+    return neighbours
 
 
 def get_real_neighbours(grid):
@@ -41,58 +50,16 @@ def get_real_neighbours(grid):
     return real_neighbours
 
 
-
-def get_real_neighbours_of_a_position(position, grid):
-    pn = potential_neighbours(position)
-    return [p for p in pn if p in grid]
-
-
-
-def get_stems(word):
-    return
-
-
-
-def get_stems_for_word_list(wl):
-    stems = []
-    for word in wl:
-        stems += [word[:i] for i in range(1, len(word))]
-    return set(stems)
-
-
-
-def search(grid, dictionary):
-    neighbours = get_real_neighbours(grid)
-    stems = get_stems_for_word_list(dictionary)
-    words = []
-
-    def do_search(path):
-        word = path_to_word(path, grid)
-        if word in dictionary:
-            words.append(word)
-        if word in stems:
-            for next_pos in neighbours[path[-1]]:
-                if next_pos not in path:
-                    do_search(path + [next_pos])
-
-    for position in grid:
-        do_search([position])
-
-    return set(words)
-
-
-
-def display_words(words):
-    for word in words:
-        print(word)
-    print("Found %s words" % len(words))
-
-
-
 def main():
-    grid = make_grid(4, 4)
-    word_list = load_word_list("words.txt")
-    words = search(grid, word_list)
+    args = get_arguments()
+    grid = make_grid(args.columns, args.rows)
+
+    if args.grid:
+        display_grid(grid, args.columns, args.rows)
+
+    word_list = load_word_list(args.file)
+    neighbours = get_real_neighbours(grid)
+    words = search(grid, neighbours, word_list)
     display_words(words)
 
 
